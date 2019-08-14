@@ -1,0 +1,30 @@
+<idea-plugin>
+  <id>org.elasticsoftware.elasticactors</id>
+  <name>Elastic Actors</name>
+  <version>1.0</version>
+  <vendor email="andrebrait@gmail.com" url="https://github.com/elasticsoftwarefoundation">Elastic Software Foundation</vendor>
+
+  <description><![CDATA[
+      Plugin for IntelliJ for Elastic Actors integration
+    ]]></description>
+
+  <change-notes><![CDATA[
+      This is the first release of this plugin.
+    ]]>
+  </change-notes>
+
+  <idea-version since-build="162"/>
+
+  <depends>com.intellij.modules.java</depends>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <lang.findUsagesProvider language="JAVA" implementationClass="org.elasticsoftware.elasticactors.plugin.MessageHandlerFindUsagesProvider"/>
+    <implicitUsageProvider implementation="org.elasticsoftware.elasticactors.plugin.MessageHandlerUsageProvider" />
+    <annotator language="JAVA" implementationClass="org.elasticsoftware.elasticactors.plugin.MessageHandlerAnnotator" />
+  </extensions>
+
+  <actions>
+    <!-- Add your actions here -->
+  </actions>
+
+</idea-plugin>
