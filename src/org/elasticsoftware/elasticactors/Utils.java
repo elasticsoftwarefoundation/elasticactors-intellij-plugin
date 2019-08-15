@@ -3,12 +3,12 @@ package org.elasticsoftware.elasticactors;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiParameterList;
-import com.intellij.psi.util.InheritanceUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.intellij.psi.util.InheritanceUtil.isInheritor;
 import static com.intellij.psi.util.PsiTypesUtil.getParameterType;
 import static com.intellij.psi.util.PsiTypesUtil.getPsiClass;
 
@@ -22,9 +22,14 @@ public final class Utils {
         int foundSender = 0;
         int foundState = 0;
         int foundActorSystem = 0;
+        int foundVarArgs = 0;
         List<String> unknownClasses = new ArrayList<>();
         PsiParameter[] parameters = psiParameterList.getParameters();
         for (int i = 0; i < psiParameterList.getParametersCount(); i++) {
+            PsiParameter parameter = parameters[i];
+            if (parameter.isVarArgs()) {
+                foundVarArgs++;
+            }
             PsiClass paramClass =
                     getPsiClass(getParameterType(parameters, i, parameters[i].isVarArgs()));
             if (paramClass != null) {
@@ -39,7 +44,7 @@ public final class Utils {
                 } else if (paramClass
                         .hasAnnotation("org.elasticsoftware.elasticactors.serialization.Message")) {
                     foundMessage++;
-                } else if (InheritanceUtil.isInheritor(
+                } else if (isInheritor(
                         paramClass,
                         "org.elasticsoftware.elasticactors.ActorState")) {
                     foundState++;
@@ -54,7 +59,7 @@ public final class Utils {
                 || foundState > 1
                 || foundActorSystem > 1
                 || !unknownClasses.isEmpty()) {
-            List<String> reasons = new ArrayList<>(5);
+            List<String> reasons = new ArrayList<>();
             if (psiParameterList.getParametersCount() == 0) {
                 reasons.add("Handler Method should have at least one parameter (message)");
             }
@@ -83,6 +88,9 @@ public final class Utils {
                 reasons.add(
                         "Unexpected Parameter Types: [" + String.join(", ", unknownClasses) + "]");
             }
+            if (foundVarArgs > 0) {
+                reasons.add("Handler methods cannot use varArgs");
+            }
             return reasons;
         }
 
@@ -94,38 +102,44 @@ public final class Utils {
         int foundSender = 0;
         int foundState = 0;
         int foundActorSystem = 0;
-        int foundUnknown = 0;
         PsiParameter[] parameters = psiParameterList.getParameters();
         for (int i = 0; i < psiParameterList.getParametersCount(); i++) {
+            PsiParameter parameter = parameters[i];
+            if (parameter.isVarArgs()) {
+                return true;
+            }
             PsiClass paramClass =
-                    getPsiClass(getParameterType(parameters, i, parameters[i].isVarArgs()));
+                    getPsiClass(getParameterType(parameters, i, parameter.isVarArgs()));
             if (paramClass != null) {
                 if (Objects.equals(
                         paramClass.getQualifiedName(),
                         "org.elasticsoftware.elasticactors.ActorRef")) {
-                    foundSender++;
+                    if (++foundSender > 1) {
+                        return true;
+                    }
                 } else if (Objects.equals(
                         paramClass.getQualifiedName(),
                         "org.elasticsoftware.elasticactors.ActorSystem")) {
-                    foundActorSystem++;
+                    if (++foundActorSystem > 1) {
+                        return true;
+                    }
                 } else if (paramClass
                         .hasAnnotation("org.elasticsoftware.elasticactors.serialization.Message")) {
-                    foundMessage++;
-                } else if (InheritanceUtil.isInheritor(
+                    if (++foundMessage > 1) {
+                        return true;
+                    }
+                } else if (isInheritor(
                         paramClass,
                         "org.elasticsoftware.elasticactors.ActorState")) {
-                    foundState++;
+                    if (++foundState > 1) {
+                        return true;
+                    }
                 } else {
-                    foundUnknown++;
+                    return true;
                 }
             }
         }
-        return psiParameterList.getParametersCount() == 0
-                || foundMessage != 1
-                || foundSender > 1
-                || foundState > 1
-                || foundActorSystem > 1
-                || foundUnknown > 0;
+        return foundMessage != 1;
     }
 
 }
