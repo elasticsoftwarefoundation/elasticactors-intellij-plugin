@@ -2,14 +2,9 @@ package org.elasticsoftware.elasticactors.plugin;
 
 import com.intellij.codeInsight.daemon.ImplicitUsageProvider;
 import com.intellij.lang.jvm.JvmModifier;
-import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiParameter;
-import com.intellij.psi.PsiParameterList;
-
-import static com.intellij.psi.util.PsiTypesUtil.getParameterType;
-import static com.intellij.psi.util.PsiTypesUtil.getPsiClass;
+import org.elasticsoftware.elasticactors.Utils;
 
 public class MessageHandlerUsageProvider implements ImplicitUsageProvider {
 
@@ -19,7 +14,7 @@ public class MessageHandlerUsageProvider implements ImplicitUsageProvider {
                 && ((PsiMethod) psiElement).hasModifier(JvmModifier.PUBLIC)
                 && ((PsiMethod) psiElement)
                 .hasAnnotation("org.elasticsoftware.elasticactors.MessageHandler")
-                && hasMessageArgument(((PsiMethod) psiElement).getParameterList());
+                && !Utils.isInvalidHandlerArguments(((PsiMethod) psiElement).getParameterList());
     }
 
     @Override
@@ -32,16 +27,5 @@ public class MessageHandlerUsageProvider implements ImplicitUsageProvider {
         return false;
     }
 
-    private static boolean hasMessageArgument(PsiParameterList psiParameterList) {
-        PsiParameter[] parameters = psiParameterList.getParameters();
-        for (int i = 0; i < psiParameterList.getParametersCount(); i++) {
-            PsiClass paramClass =
-                    getPsiClass(getParameterType(parameters, i, parameters[i].isVarArgs()));
-            if (paramClass != null && paramClass
-                    .hasAnnotation("org.elasticsoftware.elasticactors.serialization.Message")) {
-                return true;
-            }
-        }
-        return false;
-    }
+
 }

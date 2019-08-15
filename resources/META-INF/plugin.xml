@@ -18,7 +18,6 @@
   <depends>com.intellij.modules.java</depends>
 
   <extensions defaultExtensionNs="com.intellij">
-    <lang.findUsagesProvider language="JAVA" implementationClass="org.elasticsoftware.elasticactors.plugin.MessageHandlerFindUsagesProvider"/>
     <implicitUsageProvider implementation="org.elasticsoftware.elasticactors.plugin.MessageHandlerUsageProvider" />
     <annotator language="JAVA" implementationClass="org.elasticsoftware.elasticactors.plugin.MessageHandlerAnnotator" />
   </extensions>
