@@ -27,12 +27,14 @@ public class MessageHandlerUsageTypeProvider implements UsageTypeProvider {
             PsiMethodCallExpression methodCall =
                     getParentOfType(psiClassObjectAccess, PsiMethodCallExpression.class);
             if (methodCall != null) {
-                PsiMethod method = methodCall.resolveMethod();
-                if (method != null
-                        && method.getName().equals("ask")
-                        && isActorRef(method.getContainingClass())
-                        && isActorRefMethod(method)) {
-                    return MESSAGE_ASK;
+                PsiElement nameElement = methodCall.getMethodExpression().getReferenceNameElement();
+                if (nameElement != null && "ask".equals(nameElement.getText())) {
+                    PsiMethod method = methodCall.resolveMethod();
+                    if (method != null
+                            && isActorRef(method.getContainingClass())
+                            && isActorRefMethod(method)) {
+                        return MESSAGE_ASK;
+                    }
                 }
             }
         }

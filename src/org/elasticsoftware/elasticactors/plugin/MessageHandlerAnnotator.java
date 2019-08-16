@@ -77,18 +77,22 @@ public class MessageHandlerAnnotator implements Annotator {
             }
         } else if (element instanceof PsiMethodCallExpression) {
             PsiMethodCallExpression methodCall = (PsiMethodCallExpression) element;
-            PsiMethod method = methodCall.resolveMethod();
-            if (method != null) {
-                boolean isTell = method.getName().equals("tell");
-                boolean isAsk = !isTell && method.getName().equals("ask");
-                if ((isTell || isAsk)
-                        && isActorRef(method.getContainingClass())
-                        && isActorRefMethod(method)) {
-                    if (isTell) {
-                        validateMessageArgument(holder, methodCall);
-                    } else {
-                        validateMessageArgument(holder, methodCall);
-                        validateResponseTypeArgument(holder, methodCall);
+            PsiElement nameElement = methodCall.getMethodExpression().getReferenceNameElement();
+            if (nameElement != null) {
+                String methodName = nameElement.getText();
+                boolean isTell = "tell".equals(methodName);
+                boolean isAsk = !isTell && "ask".equals(methodName);
+                if (isTell || isAsk) {
+                    PsiMethod method = methodCall.resolveMethod();
+                    if (method != null
+                            && isActorRef(method.getContainingClass())
+                            && isActorRefMethod(method)) {
+                        if (isTell) {
+                            validateMessageArgument(holder, methodCall);
+                        } else {
+                            validateMessageArgument(holder, methodCall);
+                            validateResponseTypeArgument(holder, methodCall);
+                        }
                     }
                 }
             }
