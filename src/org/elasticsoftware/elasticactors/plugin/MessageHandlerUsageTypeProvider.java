@@ -9,8 +9,8 @@ import com.intellij.usages.impl.rules.UsageType;
 import com.intellij.usages.impl.rules.UsageTypeProvider;
 
 import static com.intellij.psi.util.PsiTreeUtil.getParentOfType;
-import static org.elasticsoftware.elasticactors.Utils.isActorAsk;
 import static org.elasticsoftware.elasticactors.Utils.isActorRef;
+import static org.elasticsoftware.elasticactors.Utils.isActorRefMethod;
 import static org.elasticsoftware.elasticactors.Utils.isHandler;
 
 public class MessageHandlerUsageTypeProvider implements UsageTypeProvider {
@@ -29,8 +29,9 @@ public class MessageHandlerUsageTypeProvider implements UsageTypeProvider {
             if (methodCall != null) {
                 PsiMethod method = methodCall.resolveMethod();
                 if (method != null
+                        && method.getName().equals("ask")
                         && isActorRef(method.getContainingClass())
-                        && isActorAsk(method)) {
+                        && isActorRefMethod(method)) {
                     return MESSAGE_ASK;
                 }
             }

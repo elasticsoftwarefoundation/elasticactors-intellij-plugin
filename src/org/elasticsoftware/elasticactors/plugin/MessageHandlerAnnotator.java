@@ -26,8 +26,7 @@ import static com.intellij.psi.util.InheritanceUtil.isInheritor;
 import static com.intellij.psi.util.PsiTypesUtil.getParameterType;
 import static com.intellij.psi.util.PsiTypesUtil.getPsiClass;
 import static com.intellij.psi.util.PsiUtil.resolveGenericsClassInType;
-import static org.elasticsoftware.elasticactors.Utils.isActorAsk;
-import static org.elasticsoftware.elasticactors.Utils.isActorTell;
+import static org.elasticsoftware.elasticactors.Utils.isActorRefMethod;
 import static org.elasticsoftware.elasticactors.Utils.isHandler;
 
 public class MessageHandlerAnnotator implements Annotator {
@@ -79,12 +78,18 @@ public class MessageHandlerAnnotator implements Annotator {
         } else if (element instanceof PsiMethodCallExpression) {
             PsiMethodCallExpression methodCall = (PsiMethodCallExpression) element;
             PsiMethod method = methodCall.resolveMethod();
-            if (method != null && isActorRef(method.getContainingClass())) {
-                if (isActorTell(method)) {
-                    validateMessageArgument(holder, methodCall);
-                } else if (isActorAsk(method)) {
-                    validateMessageArgument(holder, methodCall);
-                    validateResponseTypeArgument(holder, methodCall);
+            if (method != null) {
+                boolean isTell = method.getName().equals("tell");
+                boolean isAsk = !isTell && method.getName().equals("ask");
+                if ((isTell || isAsk)
+                        && isActorRef(method.getContainingClass())
+                        && isActorRefMethod(method)) {
+                    if (isTell) {
+                        validateMessageArgument(holder, methodCall);
+                    } else {
+                        validateMessageArgument(holder, methodCall);
+                        validateResponseTypeArgument(holder, methodCall);
+                    }
                 }
             }
         }

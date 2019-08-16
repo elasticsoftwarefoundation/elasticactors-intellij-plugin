@@ -18,15 +18,7 @@ public final class Utils {
         return psiMethod.hasAnnotation("org.elasticsoftware.elasticactors.MessageHandler");
     }
 
-    public static boolean isActorAsk(PsiMethod method) {
-        return method.getName().equals("ask") && isActorRefMethod(method);
-    }
-
-    public static boolean isActorTell(PsiMethod method) {
-        return method.getName().equals("tell") && isActorRefMethod(method);
-    }
-
-    private static boolean isActorRefMethod(PsiMethod method) {
+    public static boolean isActorRefMethod(PsiMethod method) {
         return stream(getDeepestSuperMethod(method))
                 .map(PsiMethod::getContainingClass)
                 .filter(Objects::nonNull)
