@@ -3,6 +3,7 @@ package org.elasticsoftware.elasticactors.plugin;
 import com.intellij.codeInspection.AbstractBaseJavaLocalInspectionTool;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.jvm.JvmModifier;
+import com.intellij.psi.CommonClassNames;
 import com.intellij.psi.JavaElementVisitor;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassType.ClassResolveResult;
@@ -16,7 +17,11 @@ import com.intellij.psi.search.searches.ClassInheritorsSearch;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static com.intellij.psi.util.PsiTypesUtil.getPsiClass;
 import static com.intellij.psi.util.PsiUtil.resolveGenericsClassInType;
@@ -25,6 +30,22 @@ import static org.elasticsoftware.elasticactors.Utils.isActorRefMethod;
 import static org.elasticsoftware.elasticactors.Utils.isMessage;
 
 public class SuspectActorRefCallsInspection extends AbstractBaseJavaLocalInspectionTool {
+
+    private static final Set<String> ALL_COMMON_CLASSES =
+            Arrays.stream(CommonClassNames.class.getDeclaredFields())
+                    .filter(f -> f.getType().equals(String.class))
+                    .map(f -> {
+                        try {
+                            return f.get(null);
+                        } catch (IllegalAccessException e) {
+                            return null;
+                        }
+                    }).filter(Objects::nonNull)
+                    .map(String.class::cast)
+                    .filter(s -> s.contains("."))
+                    .filter(s -> !CommonClassNames.DEFAULT_PACKAGE.equals(s))
+                    .filter(s -> !CommonClassNames.CLASS_FILE_EXTENSION.equals(s))
+                    .collect(Collectors.toSet());
 
     @NotNull
     @Override
@@ -102,16 +123,25 @@ public class SuspectActorRefCallsInspection extends AbstractBaseJavaLocalInspect
                         argument,
                         "Argument should be of a type annotated with @Message");
             }
-            if (!isConcrete(argClass) || !argClass.hasModifier(JvmModifier.FINAL)) {
+            if (!isJavaCorePackage(argClass)
+                    && (!isConcrete(argClass) || !argClass.hasModifier(JvmModifier.FINAL))) {
                 ClassInheritorsSearch.search(argClass).findAll().stream()
                         .filter(SuspectActorRefCallsInspection::isConcrete)
                         .filter(SuspectActorRefCallsInspection::isNotMessage)
+                        .limit(5)
                         .forEach(psiClass -> holder.registerProblem(
                                 argument,
                                 "Found possible inheritor not annotated with @Message: "
                                         + psiClass.getQualifiedName()));
             }
         }
+    }
+
+    private static boolean isJavaCorePackage(PsiClass psiClass) {
+        String qualifiedName = psiClass.getQualifiedName();
+        return qualifiedName == null
+                || qualifiedName.startsWith("java.")
+                || ALL_COMMON_CLASSES.contains(qualifiedName);
     }
 
     private static boolean isConcrete(@Nullable PsiClass argClass) {
