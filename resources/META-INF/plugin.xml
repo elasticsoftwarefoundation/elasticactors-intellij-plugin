@@ -21,6 +21,11 @@
     <implicitUsageProvider implementation="org.elasticsoftware.elasticactors.plugin.MessageHandlerImplicitUsageProvider" />
     <annotator language="JAVA" implementationClass="org.elasticsoftware.elasticactors.plugin.MessageHandlerAnnotator" />
     <usageTypeProvider implementation="org.elasticsoftware.elasticactors.plugin.MessageHandlerUsageTypeProvider" order="first" />
+    <localInspection groupPath="Elastic Actors,Suspicious ActorRef method calls" language="JAVA"
+      shortName="ElasticActorRefCall"
+      groupName="Elastic Actors inspections" enabledByDefault="true" level="WARNING"
+      implementationClass="org.elasticsoftware.elasticactors.plugin.SuspectActorRefCallsInspection"
+      displayName="Suspicious ActorRef method call"/>
   </extensions>
 
   <actions>
