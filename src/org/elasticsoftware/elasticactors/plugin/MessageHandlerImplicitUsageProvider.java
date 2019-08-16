@@ -1,6 +1,7 @@
 package org.elasticsoftware.elasticactors.plugin;
 
 import com.intellij.codeInsight.daemon.ImplicitUsageProvider;
+import com.intellij.lang.jvm.JvmModifier;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
 
@@ -10,7 +11,9 @@ public class MessageHandlerImplicitUsageProvider implements ImplicitUsageProvide
 
     @Override
     public boolean isImplicitUsage(PsiElement psiElement) {
-        return psiElement instanceof PsiMethod && isHandler((PsiMethod) psiElement);
+        return psiElement instanceof PsiMethod
+                && ((PsiMethod) psiElement).hasModifier(JvmModifier.PUBLIC)
+                && isHandler((PsiMethod) psiElement);
     }
 
     @Override
