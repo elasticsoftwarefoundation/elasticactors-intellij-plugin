@@ -4,6 +4,7 @@ import com.intellij.codeInspection.AbstractBaseJavaLocalInspectionTool;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.lang.jvm.JvmModifier;
 import com.intellij.psi.JavaElementVisitor;
+import com.intellij.psi.PsiAnonymousClass;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassType.ClassResolveResult;
 import com.intellij.psi.PsiElement;
@@ -13,6 +14,7 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiMethodCallExpression;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.search.searches.ClassInheritorsSearch;
+import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -156,7 +158,19 @@ public class SuspectActorRefCallsInspection extends AbstractBaseJavaLocalInspect
         holder.registerProblem(
                 argument,
                 "Found possible inheritor not annotated with @Message: "
-                        + psiClass.getQualifiedName());
+                        + (psiClass instanceof PsiAnonymousClass
+                        ? "Anonymous class in "
+                        + getConcreteParentOfType(psiClass).getQualifiedName()
+                        : psiClass.getQualifiedName()));
+    }
+
+    @NotNull
+    private static PsiClass getConcreteParentOfType(@NotNull PsiClass psiClass) {
+        PsiClass parent = psiClass;
+        while (parent instanceof PsiAnonymousClass) {
+            parent = PsiTreeUtil.getParentOfType(parent, PsiClass.class);
+        }
+        return parent != null ? parent : psiClass;
     }
 
     private static boolean isFinal(@NotNull PsiClass psiClass) {
