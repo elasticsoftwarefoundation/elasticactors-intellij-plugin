@@ -33,6 +33,19 @@ public final class Utils {
         return isInheritor(containingClass, "org.elasticsoftware.elasticactors.ActorRef");
     }
 
+    public static boolean isElasticActorMethod(@NotNull PsiMethod method) {
+        return stream(getDeepestSuperMethod(method))
+                .map(PsiMethod::getContainingClass)
+                .filter(Objects::nonNull)
+                .map(PsiClass::getQualifiedName)
+                .filter(Objects::nonNull)
+                .anyMatch(fqn -> fqn.equals("org.elasticsoftware.elasticactors.ElasticActor"));
+    }
+
+    public static boolean isElasticActor(@Nullable PsiClass containingClass) {
+        return isInheritor(containingClass, "org.elasticsoftware.elasticactors.ElasticActor");
+    }
+
     private static PsiMethod[] getDeepestSuperMethod(@NotNull PsiMethod method) {
         PsiMethod[] deepestSuperMethods = method.findDeepestSuperMethods();
         return deepestSuperMethods.length > 0 ? deepestSuperMethods : new PsiMethod[]{method};
