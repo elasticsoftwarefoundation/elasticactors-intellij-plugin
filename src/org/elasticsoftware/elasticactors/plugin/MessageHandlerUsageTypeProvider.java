@@ -2,16 +2,15 @@ package org.elasticsoftware.elasticactors.plugin;
 
 import com.intellij.psi.PsiClassObjectAccessExpression;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiInstanceOfExpression;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiMethodCallExpression;
 import com.intellij.psi.PsiParameter;
-import com.intellij.usages.impl.rules.JavaUsageTypeProvider;
+import com.intellij.psi.PsiTypeCastExpression;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.usages.impl.rules.UsageType;
 import com.intellij.usages.impl.rules.UsageTypeProvider;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.intellij.psi.util.PsiTreeUtil.getParentOfType;
 import static org.elasticsoftware.elasticactors.Utils.isActorRef;
@@ -22,18 +21,26 @@ import static org.elasticsoftware.elasticactors.Utils.isHandler;
 
 public class MessageHandlerUsageTypeProvider implements UsageTypeProvider {
 
-    private static final UsageTypeProvider JAVA_USAGE_TYPE_PROVIDER = new JavaUsageTypeProvider();
-
-    private static final Map<UsageType, UsageType> USAGES = new HashMap<>();
-
-    private static final String USAGE_PREFIX = "Actor message receive (";
-    private static final String USAGE_SUFFIX = ")";
+    private static final String USAGE_PREFIX = "Actor message receive: ";
 
     private static final UsageType MESSAGE_HANDLER = new UsageType("Actor message handler");
     private static final UsageType MESSAGE_ASK = new UsageType("Actor message response type");
+    private static final UsageType CLASS_CLASS_OBJECT_ACCESS =
+            getUsageType(UsageType.CLASS_CLASS_OBJECT_ACCESS);
+    private static final UsageType CLASS_CAST_TO = getUsageType(UsageType.CLASS_CAST_TO);
+    private static final UsageType CLASS_INSTANCE_OF = getUsageType(UsageType.CLASS_INSTANCE_OF);
 
     @Override
     public UsageType getUsageType(PsiElement element) {
+
+        PsiParameter psiParameter = getParentOfType(element, PsiParameter.class);
+        if (psiParameter != null) {
+            final PsiElement scope = psiParameter.getDeclarationScope();
+            if (scope instanceof PsiMethod && isHandler((PsiMethod) scope)) {
+                return MESSAGE_HANDLER;
+            }
+        }
+
         PsiClassObjectAccessExpression psiClassObjectAccess =
                 getParentOfType(element, PsiClassObjectAccessExpression.class);
         if (psiClassObjectAccess != null) {
@@ -52,23 +59,32 @@ public class MessageHandlerUsageTypeProvider implements UsageTypeProvider {
             }
         }
 
-        PsiParameter psiParameter = getParentOfType(element, PsiParameter.class);
-        if (psiParameter != null) {
-            final PsiElement scope = psiParameter.getDeclarationScope();
-            if (scope instanceof PsiMethod && isHandler((PsiMethod) scope)) {
-                return MESSAGE_HANDLER;
-            }
-        }
-
         PsiMethod method = getParentOfType(element, PsiMethod.class);
         if (method != null
                 && "onReceive".equals(method.getName())
                 && isElasticActor(method.getContainingClass())
                 && isElasticActorMethod(method)) {
-            UsageType javaUsageType = JAVA_USAGE_TYPE_PROVIDER.getUsageType(element);
-            if (javaUsageType != null) {
-                return actorUsage(javaUsageType);
+
+            if (psiClassObjectAccess != null) {
+                return CLASS_CLASS_OBJECT_ACCESS;
             }
+
+            PsiTypeCastExpression castExpression =
+                    PsiTreeUtil.getParentOfType(element, PsiTypeCastExpression.class);
+            if (castExpression != null) {
+                if (PsiTreeUtil.isAncestor(castExpression.getCastType(), element, true)) {
+                    return CLASS_CAST_TO;
+                }
+            }
+
+            PsiInstanceOfExpression instanceOfExpression =
+                    PsiTreeUtil.getParentOfType(element, PsiInstanceOfExpression.class);
+            if (instanceOfExpression != null) {
+                if (PsiTreeUtil.isAncestor(instanceOfExpression.getCheckType(), element, true)) {
+                    return CLASS_INSTANCE_OF;
+                }
+            }
+
         }
 
         return null;
@@ -76,13 +92,10 @@ public class MessageHandlerUsageTypeProvider implements UsageTypeProvider {
     }
 
     @NotNull
-    private static UsageType actorUsage(@NotNull UsageType usageType) {
-        return USAGES.computeIfAbsent(usageType, MessageHandlerUsageTypeProvider::getUsageType);
-    }
-
-    @NotNull
     private static UsageType getUsageType(@NotNull UsageType usageType) {
-        return new UsageType(USAGE_PREFIX + usageType.toString() + USAGE_SUFFIX);
+        String usageString = usageType.toString();
+        String description = usageString.substring(0, 1).toLowerCase() + usageString.substring(1);
+        return new UsageType(USAGE_PREFIX + description);
     }
 
 }
