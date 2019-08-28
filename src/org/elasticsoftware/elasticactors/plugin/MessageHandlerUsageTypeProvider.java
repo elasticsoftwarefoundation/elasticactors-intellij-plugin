@@ -7,12 +7,12 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiMethodCallExpression;
 import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiTypeCastExpression;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.usages.impl.rules.UsageType;
 import com.intellij.usages.impl.rules.UsageTypeProvider;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.psi.util.PsiTreeUtil.getParentOfType;
+import static com.intellij.psi.util.PsiTreeUtil.isAncestor;
 import static org.elasticsoftware.elasticactors.Utils.isActorRef;
 import static org.elasticsoftware.elasticactors.Utils.isActorRefMethod;
 import static org.elasticsoftware.elasticactors.Utils.isElasticActor;
@@ -70,17 +70,17 @@ public class MessageHandlerUsageTypeProvider implements UsageTypeProvider {
             }
 
             PsiTypeCastExpression castExpression =
-                    PsiTreeUtil.getParentOfType(element, PsiTypeCastExpression.class);
+                    getParentOfType(element, PsiTypeCastExpression.class);
             if (castExpression != null) {
-                if (PsiTreeUtil.isAncestor(castExpression.getCastType(), element, true)) {
+                if (isAncestor(castExpression.getCastType(), element, true)) {
                     return CLASS_CAST_TO;
                 }
             }
 
             PsiInstanceOfExpression instanceOfExpression =
-                    PsiTreeUtil.getParentOfType(element, PsiInstanceOfExpression.class);
+                    getParentOfType(element, PsiInstanceOfExpression.class);
             if (instanceOfExpression != null) {
-                if (PsiTreeUtil.isAncestor(instanceOfExpression.getCheckType(), element, true)) {
+                if (isAncestor(instanceOfExpression.getCheckType(), element, true)) {
                     return CLASS_INSTANCE_OF;
                 }
             }
