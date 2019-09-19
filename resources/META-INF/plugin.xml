@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>org.elasticsoftware.elasticactors</id>
   <name>Elastic Actors</name>
-  <version>1.1.0</version>
+  <version>1.2.0</version>
   <vendor email="andre.brait@getbux.com" url="https://github.com/elasticsoftwarefoundation">Elastic Software Foundation</vendor>
 
   <description><![CDATA[
@@ -26,6 +26,11 @@
       groupName="Elastic Actors framework" enabledByDefault="true" level="WARNING"
       implementationClass="org.elasticsoftware.elasticactors.plugin.SuspectActorRefCallsInspection"
       displayName="Suspicious ActorRef method call"/>
+    <localInspection language="JAVA"
+        shortName="IncorrectMessageMutabilityCall"
+        groupName="Elastic Actors framework" enabledByDefault="true" level="WARNING"
+        implementationClass="org.elasticsoftware.elasticactors.plugin.IncorrectMessageMutabilityInspection"
+        displayName="Potentially incorrect message mutability"/>
   </extensions>
 
   <actions>

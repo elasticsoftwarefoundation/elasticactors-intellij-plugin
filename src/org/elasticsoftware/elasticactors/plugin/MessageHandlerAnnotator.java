@@ -19,6 +19,10 @@ import java.util.Objects;
 import static com.intellij.psi.util.InheritanceUtil.isInheritor;
 import static com.intellij.psi.util.PsiTypesUtil.getParameterType;
 import static com.intellij.psi.util.PsiTypesUtil.getPsiClass;
+import static org.elasticsoftware.elasticactors.Utils.ACTOR_REF_CLASS;
+import static org.elasticsoftware.elasticactors.Utils.ACTOR_STATE_CLASS;
+import static org.elasticsoftware.elasticactors.Utils.ACTOR_SYSTEM_CLASS;
+import static org.elasticsoftware.elasticactors.Utils.ELASTIC_ACTOR_CLASS;
 import static org.elasticsoftware.elasticactors.Utils.isHandler;
 import static org.elasticsoftware.elasticactors.Utils.isMessage;
 
@@ -112,18 +116,16 @@ public class MessageHandlerAnnotator implements Annotator {
                         + "@Message");
             }
             if (foundSender > 1) {
-                reasons.add(
-                        "Handler Method should not have more than one parameter of type "
-                                + "org.elasticsoftware.elasticactors.ActorRef");
+                reasons.add("Handler Method should not have more than one parameter of type "
+                        + ELASTIC_ACTOR_CLASS);
             }
             if (foundState > 1) {
-                reasons.add(
-                        "Handler Method should not have more than one parameter of type "
-                                + "org.elasticsoftware.elasticactors.ActorState");
+                reasons.add("Handler Method should not have more than one parameter of type "
+                        + ACTOR_STATE_CLASS);
             }
             if (foundActorSystem > 1) {
                 reasons.add("Handler Method should not have more than one parameter of type "
-                        + "org.elasticsoftware.elasticactors.ActorSystem");
+                        + ACTOR_SYSTEM_CLASS);
             }
             return reasons;
         }
@@ -132,21 +134,17 @@ public class MessageHandlerAnnotator implements Annotator {
     }
 
     private static boolean isActorState(@Nullable PsiClass paramClass) {
-        return isInheritor(
-                paramClass,
-                "org.elasticsoftware.elasticactors.ActorState");
+        return isInheritor(paramClass, ACTOR_STATE_CLASS);
     }
 
     private static boolean isActorSystem(@Nullable PsiClass paramClass) {
-        return paramClass != null && Objects.equals(
-                paramClass.getQualifiedName(),
-                "org.elasticsoftware.elasticactors.ActorSystem");
+        return paramClass != null
+                && Objects.equals(paramClass.getQualifiedName(), ACTOR_SYSTEM_CLASS);
     }
 
     private static boolean isActorRef(@Nullable PsiClass paramClass) {
-        return paramClass != null && Objects.equals(
-                paramClass.getQualifiedName(),
-                "org.elasticsoftware.elasticactors.ActorRef");
+        return paramClass != null
+                && Objects.equals(paramClass.getQualifiedName(), ACTOR_REF_CLASS);
     }
 
 }

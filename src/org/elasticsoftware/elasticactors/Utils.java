@@ -13,11 +13,21 @@ import static java.util.Arrays.stream;
 
 public final class Utils {
 
+    public static final String ACTOR_STATE_CLASS = "org.elasticsoftware.elasticactors.ActorState";
+    public static final String ACTOR_SYSTEM_CLASS = "org.elasticsoftware.elasticactors.ActorSystem";
+    public static final String MESSAGE_ANNOTATION_CLASS =
+            "org.elasticsoftware.elasticactors.serialization.Message";
+    public static final String MESSAGE_HANDLER_ANNOTATION_CLASS =
+            "org.elasticsoftware.elasticactors.MessageHandler";
+    public static final String ACTOR_REF_CLASS = "org.elasticsoftware.elasticactors.ActorRef";
+    public static final String ELASTIC_ACTOR_CLASS =
+            "org.elasticsoftware.elasticactors.ElasticActor";
+
     private Utils() {
     }
 
     public static boolean isHandler(@NotNull PsiMethod psiMethod) {
-        return psiMethod.hasAnnotation("org.elasticsoftware.elasticactors.MessageHandler");
+        return psiMethod.hasAnnotation(MESSAGE_HANDLER_ANNOTATION_CLASS);
     }
 
     public static boolean isActorRefMethod(@NotNull PsiMethod method) {
@@ -26,11 +36,11 @@ public final class Utils {
                 .filter(Objects::nonNull)
                 .map(PsiClass::getQualifiedName)
                 .filter(Objects::nonNull)
-                .anyMatch(fqn -> fqn.equals("org.elasticsoftware.elasticactors.ActorRef"));
+                .anyMatch(fqn -> fqn.equals(ACTOR_REF_CLASS));
     }
 
     public static boolean isActorRef(@Nullable PsiClass containingClass) {
-        return isInheritor(containingClass, "org.elasticsoftware.elasticactors.ActorRef");
+        return isInheritor(containingClass, ACTOR_REF_CLASS);
     }
 
     public static boolean isElasticActorMethod(@NotNull PsiMethod method) {
@@ -39,11 +49,11 @@ public final class Utils {
                 .filter(Objects::nonNull)
                 .map(PsiClass::getQualifiedName)
                 .filter(Objects::nonNull)
-                .anyMatch(fqn -> fqn.equals("org.elasticsoftware.elasticactors.ElasticActor"));
+                .anyMatch(fqn -> fqn.equals(ELASTIC_ACTOR_CLASS));
     }
 
     public static boolean isElasticActor(@Nullable PsiClass containingClass) {
-        return isInheritor(containingClass, "org.elasticsoftware.elasticactors.ElasticActor");
+        return isInheritor(containingClass, ELASTIC_ACTOR_CLASS);
     }
 
     private static PsiMethod[] getDeepestSuperMethod(@NotNull PsiMethod method) {
@@ -52,7 +62,7 @@ public final class Utils {
     }
 
     public static boolean isMessage(@Nullable PsiClass argClass) {
-        return argClass != null && argClass.hasAnnotation(
-                "org.elasticsoftware.elasticactors.serialization.Message");
+        return argClass != null && argClass.hasAnnotation(MESSAGE_ANNOTATION_CLASS);
     }
+
 }
