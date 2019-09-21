@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import static com.intellij.lang.jvm.JvmModifier.FINAL;
 import static com.intellij.lang.jvm.JvmModifier.STATIC;
 import static org.elasticsoftware.elasticactors.Utils.MESSAGE_ANNOTATION_CLASS;
+import static org.elasticsoftware.elasticactors.Utils.isConcrete;
 import static org.elasticsoftware.elasticactors.Utils.isMessage;
 
 import static java.util.Arrays.stream;
@@ -32,7 +33,7 @@ public class IncorrectMessageMutabilityInspection extends AbstractBaseJavaLocalI
             @Override
             public void visitClass(PsiClass aClass) {
                 super.visitClass(aClass);
-                if (isMessage(aClass)) {
+                if (isMessage(aClass) && isConcrete(aClass)) {
                     PsiIdentifier nameIdentifier = aClass.getNameIdentifier();
                     if (nameIdentifier != null) {
                         PsiAnnotation message = aClass.getAnnotation(MESSAGE_ANNOTATION_CLASS);

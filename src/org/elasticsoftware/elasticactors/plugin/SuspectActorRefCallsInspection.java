@@ -27,6 +27,7 @@ import static com.intellij.psi.util.PsiTypesUtil.getPsiClass;
 import static com.intellij.psi.util.PsiUtil.resolveGenericsClassInType;
 import static org.elasticsoftware.elasticactors.Utils.isActorRef;
 import static org.elasticsoftware.elasticactors.Utils.isActorRefMethod;
+import static org.elasticsoftware.elasticactors.Utils.isConcrete;
 import static org.elasticsoftware.elasticactors.Utils.isMessage;
 
 public class SuspectActorRefCallsInspection extends AbstractBaseJavaLocalInspectionTool {
@@ -186,11 +187,6 @@ public class SuspectActorRefCallsInspection extends AbstractBaseJavaLocalInspect
     private static boolean isJavaCorePackage(@NotNull PsiClass psiClass) {
         String qualifiedName = psiClass.getQualifiedName();
         return qualifiedName == null || qualifiedName.startsWith("java.");
-    }
-
-    private static boolean isConcrete(@NotNull PsiClass argClass) {
-        return !argClass.isInterface()
-                && !argClass.hasModifier(JvmModifier.ABSTRACT);
     }
 
 }
