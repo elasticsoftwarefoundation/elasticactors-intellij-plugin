@@ -1,6 +1,5 @@
 package org.elasticsoftware.elasticactors;
 
-import com.intellij.lang.jvm.JvmModifier;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import org.jetbrains.annotations.NotNull;
@@ -8,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
+import static com.intellij.psi.PsiModifier.ABSTRACT;
 import static com.intellij.psi.util.InheritanceUtil.isInheritor;
 
 import static java.util.Arrays.stream;
@@ -69,6 +69,6 @@ public final class Utils {
     public static boolean isConcrete(@NotNull PsiClass argClass) {
         return !argClass.isAnnotationType()
                 && !argClass.isInterface()
-                && !argClass.hasModifier(JvmModifier.ABSTRACT);
+                && !argClass.hasModifierProperty(ABSTRACT);
     }
 }

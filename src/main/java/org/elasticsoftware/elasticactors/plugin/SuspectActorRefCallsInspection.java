@@ -2,7 +2,6 @@ package org.elasticsoftware.elasticactors.plugin;
 
 import com.intellij.codeInspection.AbstractBaseJavaLocalInspectionTool;
 import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.lang.jvm.JvmModifier;
 import com.intellij.psi.JavaElementVisitor;
 import com.intellij.psi.PsiAnonymousClass;
 import com.intellij.psi.PsiClass;
@@ -23,6 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static com.intellij.psi.PsiModifier.FINAL;
+import static com.intellij.psi.PsiModifier.PRIVATE;
 import static com.intellij.psi.util.PsiTypesUtil.getPsiClass;
 import static com.intellij.psi.util.PsiUtil.resolveGenericsClassInType;
 import static org.elasticsoftware.elasticactors.Utils.isActorRef;
@@ -175,13 +176,13 @@ public class SuspectActorRefCallsInspection extends AbstractBaseJavaLocalInspect
     }
 
     private static boolean isFinal(@NotNull PsiClass psiClass) {
-        return psiClass.hasModifier(JvmModifier.FINAL) || !hasInheritableConstructors(psiClass);
+        return psiClass.hasModifierProperty(FINAL) || !hasInheritableConstructors(psiClass);
     }
 
     private static boolean hasInheritableConstructors(@NotNull PsiClass psiClass) {
         PsiMethod[] constructors = psiClass.getConstructors();
         return constructors.length == 0
-                || Arrays.stream(constructors).anyMatch(c -> !c.hasModifier(JvmModifier.PRIVATE));
+                || Arrays.stream(constructors).anyMatch(c -> !c.hasModifierProperty(PRIVATE));
     }
 
     private static boolean isJavaCorePackage(@NotNull PsiClass psiClass) {

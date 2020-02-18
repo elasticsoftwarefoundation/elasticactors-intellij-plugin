@@ -10,13 +10,14 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiIdentifier;
+import com.intellij.psi.PsiModifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.intellij.lang.jvm.JvmModifier.FINAL;
-import static com.intellij.lang.jvm.JvmModifier.STATIC;
+import static com.intellij.psi.PsiModifier.FINAL;
+import static com.intellij.psi.PsiModifier.STATIC;
 import static org.elasticsoftware.elasticactors.Utils.MESSAGE_ANNOTATION_CLASS;
 import static org.elasticsoftware.elasticactors.Utils.isConcrete;
 import static org.elasticsoftware.elasticactors.Utils.isMessage;
@@ -43,7 +44,7 @@ public class IncorrectMessageMutabilityInspection extends AbstractBaseJavaLocalI
                             if (immutable != null) {
                                 List<PsiField> nonStaticFields = stream(aClass.getAllFields())
                                         .filter(PsiElement::isValid)
-                                        .filter(psiField -> !psiField.hasModifier(STATIC))
+                                        .filter(psiField -> !psiField.hasModifierProperty(STATIC))
                                         .filter(psiField -> psiField.getContainingClass() != null)
                                         .filter(psiField -> !Throwable.class.getName()
                                                 .equals(psiField.getContainingClass()
@@ -69,14 +70,14 @@ public class IncorrectMessageMutabilityInspection extends AbstractBaseJavaLocalI
             @NotNull ProblemsHolder holder) {
         if (Boolean.parseBoolean(immutable.getText())) {
             if (!fields.isEmpty()
-                    && fields.stream().anyMatch(psiField -> !psiField.hasModifier(FINAL))) {
+                    && fields.stream().anyMatch(psiField -> !psiField.hasModifierProperty(FINAL))) {
                 holder.registerProblem(
                         nameIdentifier,
                         "@Message-annotated class marked as immutable has non-final fields");
             }
         } else {
             if (fields.isEmpty()
-                    || fields.stream().allMatch(psiField -> psiField.hasModifier(FINAL))) {
+                    || fields.stream().allMatch(psiField -> psiField.hasModifierProperty(FINAL))) {
                 holder.registerProblem(
                         nameIdentifier,
                         "@Message-annotated class marked as mutable doesn't have non-final fields");

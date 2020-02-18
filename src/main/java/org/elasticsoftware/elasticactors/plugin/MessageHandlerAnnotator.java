@@ -2,7 +2,6 @@ package org.elasticsoftware.elasticactors.plugin;
 
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
-import com.intellij.lang.jvm.JvmModifier;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
@@ -16,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.intellij.psi.PsiModifier.PUBLIC;
 import static com.intellij.psi.util.InheritanceUtil.isInheritor;
 import static com.intellij.psi.util.PsiTypesUtil.getParameterType;
 import static com.intellij.psi.util.PsiTypesUtil.getPsiClass;
@@ -35,7 +35,7 @@ public class MessageHandlerAnnotator implements Annotator {
             PsiMethod method = (PsiMethod) element;
             if (isHandler(method)) {
                 List<String> invalidReasons = validateArguments(method.getParameterList());
-                if (!method.hasModifier(JvmModifier.PUBLIC)) {
+                if (!method.hasModifierProperty(PUBLIC)) {
                     holder.createErrorAnnotation(
                             element,
                             "Message Handler methods must be public");

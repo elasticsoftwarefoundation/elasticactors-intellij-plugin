@@ -1,8 +1,7 @@
 <idea-plugin>
   <id>org.elasticsoftware.elasticactors</id>
   <name>Elastic Actors</name>
-  <version>1.2.2</version>
-  <vendor email="andre.brait@getbux.com" url="https://github.com/elasticsoftwarefoundation">Elastic Software Foundation</vendor>
+  <vendor email="andrebrait@gmail.com" url="https://github.com/elasticsoftwarefoundation">Elastic Software Foundation</vendor>
 
   <description><![CDATA[
       Plugin for IntelliJ for Elastic Actors integration
@@ -12,8 +11,6 @@
       This is the first release of this plugin.
     ]]>
   </change-notes>
-
-  <idea-version since-build="162"/>
 
   <depends>com.intellij.modules.java</depends>
 
