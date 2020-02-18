@@ -12,6 +12,10 @@ repositories {
     mavenCentral()
 }
 
+publishPlugin {
+    token intellijPublishToken
+}
+
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
     // Define IntelliJ Platform API version to use for building this plugin
