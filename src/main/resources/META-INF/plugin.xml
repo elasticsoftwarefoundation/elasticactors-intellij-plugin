@@ -4,11 +4,48 @@
   <vendor email="andrebrait@gmail.com" url="https://github.com/elasticsoftwarefoundation">Elastic Software Foundation</vendor>
 
   <description><![CDATA[
-      Plugin for IntelliJ for Elastic Actors integration
+      <a href="https://github.com/elasticsoftwarefoundation/elasticactors">Elastic Actors Framework</a> support for IntelliJ IDEA.
+      <br>
+      <br>
+      <strong>Features:</strong>
+      <ul>
+        <li>Method signature verfication for Message Handler methods</li>
+        <li>Detect suspicious types for messages being sent by Actors</li>
+        <li>Detect potential issues with mutable and immutable Message classes</li>
+        <li>Find usages of classes in the context of Actor Message handling
+          <ul>
+            <li>Usages of a class in Message Handler methods</li>
+            <li>Usages of a class inside the the Actor's <code>onReceive</code> method</li>
+          </ul>
+        </li>
+      </ul>
     ]]></description>
 
   <change-notes><![CDATA[
-      This is the first release of this plugin.
+      <strong>1.3.0</strong>
+      <ul>
+        <li>Compile against Java 11 and IntelliJ IDEA 2019.3.3</li>
+      </ul>
+      <strong>1.2.2</strong>
+      <ul>
+        <li>Fixed mutability inspection by only checking concrete classes</li>
+      </ul>
+      <strong>1.2.1</strong>
+      <ul>
+        <li>Add mutability inspection to check for immutable messages with non-final fields and mutable messages with only final fields</li>
+      </ul>
+      <strong>1.1.0</strong>
+      <ul>
+        <li>Fixed a minor issue detecting Message Handler methods</li>
+      </ul>
+      <strong>1.0.1</strong>
+      <ul>
+        <li>Performance improvements for the code inspections</li>
+      </ul>
+      <strong>1.0</strong>
+      <ul>
+        <li>Initial release</li>
+      </ul>
     ]]>
   </change-notes>
 
