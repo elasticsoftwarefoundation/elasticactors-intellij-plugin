@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.psi.util.PsiTreeUtil.getParentOfType;
 import static com.intellij.psi.util.PsiTreeUtil.isAncestor;
+import static org.elasticsoftware.elasticactors.Utils.isActorDelegateBuilderMethod;
 import static org.elasticsoftware.elasticactors.Utils.isActorRef;
 import static org.elasticsoftware.elasticactors.Utils.isActorRefMethod;
 import static org.elasticsoftware.elasticactors.Utils.isElasticActor;
@@ -25,6 +26,7 @@ public class MessageHandlerUsageTypeProvider implements UsageTypeProvider {
 
     private static final UsageType MESSAGE_HANDLER = new UsageType("Actor message handler");
     private static final UsageType MESSAGE_ASK = new UsageType("Actor message response type");
+    private static final UsageType ACTOR_DELEGATE_BUILDER = new UsageType("Actor delegate builder");
     private static final UsageType CLASS_CLASS_OBJECT_ACCESS =
             getUsageType(UsageType.CLASS_CLASS_OBJECT_ACCESS);
     private static final UsageType CLASS_CAST_TO = getUsageType(UsageType.CLASS_CAST_TO);
@@ -48,22 +50,32 @@ public class MessageHandlerUsageTypeProvider implements UsageTypeProvider {
                     getParentOfType(psiClassObjectAccess, PsiMethodCallExpression.class);
             if (methodCall != null) {
                 PsiElement nameElement = methodCall.getMethodExpression().getReferenceNameElement();
-                if (nameElement != null && "ask".equals(nameElement.getText())) {
+                if (nameElement != null) {
                     PsiMethod method = methodCall.resolveMethod();
-                    if (method != null
-                            && isActorRef(method.getContainingClass())
-                            && isActorRefMethod(method)) {
-                        return MESSAGE_ASK;
+                    if (method != null) {
+                        if ("ask".equals(nameElement.getText())
+                                && isActorRef(method.getContainingClass())
+                                && isActorRefMethod(method)) {
+                            return MESSAGE_ASK;
+                        }
+                        if (isActorDelegateBuilderMethod(method)) {
+                            return ACTOR_DELEGATE_BUILDER;
+                        }
                     }
                 }
             }
         }
 
-        PsiMethod method = getParentOfType(element, PsiMethod.class);
+        PsiMethod method;
+        PsiMethodCallExpression methodCall =
+                getParentOfType(element, PsiMethodCallExpression.class);
+        if (methodCall != null) {
+            method = methodCall.resolveMethod();
+        } else {
+            method = getParentOfType(element, PsiMethod.class);
+        }
         if (method != null
-                && "onReceive".equals(method.getName())
-                && isElasticActor(method.getContainingClass())
-                && isElasticActorMethod(method)) {
+                && (isOnReceiveMethod(method) || isActorDelegateBuilderMethod(method))) {
 
             if (psiClassObjectAccess != null) {
                 return CLASS_CLASS_OBJECT_ACCESS;
@@ -89,6 +101,12 @@ public class MessageHandlerUsageTypeProvider implements UsageTypeProvider {
 
         return null;
 
+    }
+
+    private boolean isOnReceiveMethod(PsiMethod method) {
+        return "onReceive".equals(method.getName())
+                && isElasticActor(method.getContainingClass())
+                && isElasticActorMethod(method);
     }
 
     @NotNull

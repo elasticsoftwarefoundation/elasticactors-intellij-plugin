@@ -21,6 +21,8 @@ public final class Utils {
     public static final String MESSAGE_HANDLER_ANNOTATION_CLASS =
             "org.elasticsoftware.elasticactors.MessageHandler";
     public static final String ACTOR_REF_CLASS = "org.elasticsoftware.elasticactors.ActorRef";
+    public static final String ACTOR_DELEGATE_BUILDER_INNER_CLASS =
+            "org.elasticsoftware.elasticactors.base.actors.ActorDelegate.";
     public static final String ELASTIC_ACTOR_CLASS =
             "org.elasticsoftware.elasticactors.ElasticActor";
 
@@ -38,6 +40,15 @@ public final class Utils {
                 .map(PsiClass::getQualifiedName)
                 .filter(Objects::nonNull)
                 .anyMatch(fqn -> fqn.equals(ACTOR_REF_CLASS));
+    }
+
+    public static boolean isActorDelegateBuilderMethod(@NotNull PsiMethod method) {
+        return stream(getDeepestSuperMethod(method))
+                .map(PsiMethod::getContainingClass)
+                .filter(Objects::nonNull)
+                .map(PsiClass::getQualifiedName)
+                .filter(Objects::nonNull)
+                .anyMatch(fqn -> fqn.startsWith(ACTOR_DELEGATE_BUILDER_INNER_CLASS));
     }
 
     public static boolean isActorRef(@Nullable PsiClass containingClass) {
