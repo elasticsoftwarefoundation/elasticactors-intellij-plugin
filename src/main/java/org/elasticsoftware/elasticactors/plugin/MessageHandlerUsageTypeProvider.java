@@ -24,9 +24,10 @@ public class MessageHandlerUsageTypeProvider implements UsageTypeProvider {
 
     private static final String USAGE_PREFIX = "Actor message receive: ";
 
-    private static final UsageType MESSAGE_HANDLER = new UsageType("Actor message handler");
-    private static final UsageType MESSAGE_ASK = new UsageType("Actor message response type");
-    private static final UsageType ACTOR_DELEGATE_BUILDER = new UsageType("Actor delegate builder");
+    private static final UsageType MESSAGE_HANDLER = new UsageType(() -> "Actor message handler");
+    private static final UsageType MESSAGE_ASK = new UsageType(() -> "Actor message response type");
+    private static final UsageType ACTOR_DELEGATE_BUILDER =
+            new UsageType(() -> "Actor delegate builder");
     private static final UsageType CLASS_CLASS_OBJECT_ACCESS =
             getUsageType(UsageType.CLASS_CLASS_OBJECT_ACCESS);
     private static final UsageType CLASS_CAST_TO = getUsageType(UsageType.CLASS_CAST_TO);
@@ -111,9 +112,12 @@ public class MessageHandlerUsageTypeProvider implements UsageTypeProvider {
 
     @NotNull
     private static UsageType getUsageType(@NotNull UsageType usageType) {
-        String usageString = usageType.toString();
-        String description = usageString.substring(0, 1).toLowerCase() + usageString.substring(1);
-        return new UsageType(USAGE_PREFIX + description);
+        return new UsageType(() -> {
+            String usageString = usageType.toString();
+            String description =
+                    usageString.substring(0, 1).toLowerCase() + usageString.substring(1);
+            return USAGE_PREFIX + description;
+        });
     }
 
 }

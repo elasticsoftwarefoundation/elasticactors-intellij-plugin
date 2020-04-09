@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.intellij.lang.annotation.HighlightSeverity.ERROR;
+import static com.intellij.lang.annotation.HighlightSeverity.WARNING;
 import static com.intellij.psi.PsiModifier.PUBLIC;
 import static com.intellij.psi.util.InheritanceUtil.isInheritor;
 import static com.intellij.psi.util.PsiTypesUtil.getParameterType;
@@ -36,17 +38,19 @@ public class MessageHandlerAnnotator implements Annotator {
             if (isHandler(method)) {
                 List<String> invalidReasons = validateArguments(method.getParameterList());
                 if (!method.hasModifierProperty(PUBLIC)) {
-                    holder.createErrorAnnotation(
-                            element,
-                            "Message Handler methods must be public");
+                    holder.newAnnotation(ERROR, "Message Handler methods must be public")
+                            .range(element)
+                            .create();
                 }
                 if (invalidReasons != null) {
-                    invalidReasons.forEach(s -> holder.createErrorAnnotation(element, s));
+                    invalidReasons.forEach(s -> holder.newAnnotation(ERROR, s)
+                            .range(element)
+                            .create());
                 }
                 if (!PsiType.VOID.equals(method.getReturnType())) {
-                    holder.createWarningAnnotation(
-                            element,
-                            "Message Handler methods should return void");
+                    holder.newAnnotation(WARNING, "Message Handler methods should return void")
+                            .range(element)
+                            .create();
                 }
             }
         } else if (element instanceof PsiParameter) {
@@ -56,15 +60,16 @@ public class MessageHandlerAnnotator implements Annotator {
                 if (isHandler(method)) {
                     PsiType paramType = parameter.getType();
                     if (!isValidHandlerParameterType(paramType)) {
-                        holder.createErrorAnnotation(
-                                parameter,
-                                "Unexpected parameter type for handler method: "
-                                        + parameter.getType().getCanonicalText());
+                        String message = "Unexpected parameter type for handler method: "
+                                + parameter.getType().getCanonicalText();
+                        holder.newAnnotation(ERROR, message)
+                                .range(parameter)
+                                .create();
                     }
                     if (parameter.isVarArgs()) {
-                        holder.createErrorAnnotation(
-                                parameter,
-                                "Cannot use varargs in handler method");
+                        holder.newAnnotation(ERROR, "Cannot use varargs in handler method")
+                                .range(parameter)
+                                .create();
                     }
                 }
             }

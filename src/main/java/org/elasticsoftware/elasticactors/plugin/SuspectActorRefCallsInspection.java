@@ -51,10 +51,8 @@ public class SuspectActorRefCallsInspection extends AbstractBaseJavaLocalInspect
                         if (method != null
                                 && isActorRef(method.getContainingClass())
                                 && isActorRefMethod(method)) {
-                            if (isTell) {
-                                validateMessageArgument(holder, methodCall);
-                            } else {
-                                validateMessageArgument(holder, methodCall);
+                            validateMessageArgument(holder, methodCall);
+                            if (!isTell) {
                                 validateResponseTypeArgument(holder, methodCall);
                             }
                         }

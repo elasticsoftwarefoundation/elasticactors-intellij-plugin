@@ -10,7 +10,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiIdentifier;
-import com.intellij.psi.PsiModifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
