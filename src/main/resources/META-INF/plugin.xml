@@ -22,6 +22,10 @@
     ]]></description>
 
   <change-notes><![CDATA[
+      <strong>1.4.2</strong>
+      <ul>
+        <li>Add support for IntelliJ IDEA 2020.2</li>
+      </ul>
       <strong>1.4.1</strong>
       <ul>
         <li>Add support for IntelliJ IDEA 2020.1</li>
