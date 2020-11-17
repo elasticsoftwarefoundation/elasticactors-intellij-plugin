@@ -1,12 +1,13 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij' version '0.4.21'
+    id 'org.jetbrains.intellij' version '0.6.3'
 }
 
 group 'org.elasticsoftware'
-version '1.4.2'
+version '1.4.3'
 
-sourceCompatibility = 11
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 repositories {
     mavenCentral()
@@ -19,12 +20,12 @@ publishPlugin {
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
     // Define IntelliJ Platform API version to use for building this plugin
-    version '2020.2'
+    // version '2020.2'
     plugins 'java'
 }
 
 patchPluginXml {
     version project.version
-    sinceBuild '202'
-    untilBuild '202.*'
+    sinceBuild '203'
+    untilBuild '203.*'
 }
