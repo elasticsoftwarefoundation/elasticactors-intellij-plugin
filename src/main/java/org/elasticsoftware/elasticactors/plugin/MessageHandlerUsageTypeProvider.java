@@ -34,7 +34,7 @@ public class MessageHandlerUsageTypeProvider implements UsageTypeProvider {
     private static final UsageType CLASS_INSTANCE_OF = getUsageType(UsageType.CLASS_INSTANCE_OF);
 
     @Override
-    public UsageType getUsageType(PsiElement element) {
+    public UsageType getUsageType(@NotNull PsiElement element) {
 
         PsiParameter psiParameter = getParentOfType(element, PsiParameter.class);
         if (psiParameter != null) {
