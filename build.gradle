@@ -1,10 +1,10 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij' version '0.7.3'
+    id 'org.jetbrains.intellij' version '1.2.0'
 }
 
 group 'org.elasticsoftware'
-version '1.4.5'
+version '1.4.6'
 
 sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
@@ -14,18 +14,18 @@ repositories {
 }
 
 publishPlugin {
-    token intellijPublishToken
+    token = intellijPublishToken
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
     // Define IntelliJ Platform API version to use for building this plugin
-    version '212-EAP-SNAPSHOT'
+    version = '213-EAP-SNAPSHOT'
     plugins = ['java']
 }
 
 patchPluginXml {
-    version project.version
-    sinceBuild '212'
-    untilBuild '212.*'
+    version = project.version
+    sinceBuild = '213'
+    untilBuild = '213.*'
 }
