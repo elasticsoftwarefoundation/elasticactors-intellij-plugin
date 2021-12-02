@@ -23,7 +23,6 @@ jobs:
         distribution: temurin
         java-version: 11
         check-latest: true
-        settings-path: ${{ github.workspace }}
     - name: Cache Gradle packages
       uses: actions/cache@v2
       with:
