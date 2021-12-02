@@ -9,7 +9,7 @@ Elastic Actors framework support for IntelliJ IDEA.
 * Detect potential issues with mutable and immutable Message classes
 * Find usages of classes in the context of Actor Message handling
   * Usages of a class in Message Handler methods
-  * Usages of a class inside the the Actor's `onReceive` method
+  * Usages of a class inside the Actor's `onReceive` method
 
 ### Release process
 

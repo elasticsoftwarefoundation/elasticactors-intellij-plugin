@@ -16,7 +16,7 @@
         <li>Find usages of classes in the context of Actor Message handling
           <ul>
             <li>Usages of a class in Message Handler methods</li>
-            <li>Usages of a class inside the the Actor's <code>onReceive</code> method</li>
+            <li>Usages of a class inside the Actor's <code>onReceive</code> method</li>
           </ul>
         </li>
       </ul>
