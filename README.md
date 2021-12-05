@@ -2,6 +2,9 @@
 
 Elastic Actors framework support for IntelliJ IDEA.
 
+[![CI](https://github.com/elasticsoftwarefoundation/elasticactors-intellij-plugin/actions/workflows/gradle.yml/badge.svg)](https://github.com/elasticsoftwarefoundation/elasticactors-intellij-plugin/actions/workflows/gradle.yml)
+[![License: Apache 2](https://img.shields.io/badge/LICENSE-Apache2-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
 ### Features
 
 * Method signature verfication for Message Handler methods
