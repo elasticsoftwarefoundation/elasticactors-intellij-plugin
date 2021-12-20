@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    name: Release to Maven Central
+    name: Release to Marketplace
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
