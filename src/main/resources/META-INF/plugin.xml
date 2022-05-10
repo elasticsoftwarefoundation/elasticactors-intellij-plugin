@@ -23,6 +23,11 @@
     ]]></description>
 
   <change-notes><![CDATA[
+      <strong>1.4.8</strong>
+      <ul>
+        <li>Rebuild against latest IntelliJ IDEA 2022.1</li>
+        <li>Small readability improvement for some inspections</li>
+      </ul>
       <strong>1.4.7</strong>
       <ul>
         <li>Rebuild against latest IntelliJ IDEA 2021.3</li>
@@ -70,10 +75,6 @@
       <strong>1.2.1</strong>
       <ul>
         <li>Add mutability inspection to check for immutable messages with non-final fields and mutable messages with only final fields</li>
-      </ul>
-      <strong>1.1.0</strong>
-      <ul>
-        <li>Fixed a minor issue detecting Message Handler methods</li>
       </ul>
     ]]>
   </change-notes>
