@@ -79,7 +79,7 @@ public class IncorrectMessageMutabilityInspection extends AbstractBaseJavaLocalI
                     || fields.stream().allMatch(psiField -> psiField.hasModifierProperty(FINAL))) {
                 holder.registerProblem(
                         nameIdentifier,
-                        "@Message-annotated class marked as mutable doesn't have non-final fields");
+                        "@Message-annotated class marked as mutable does not have non-final fields");
             }
         }
     }
