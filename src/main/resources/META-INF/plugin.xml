@@ -23,6 +23,10 @@
     ]]></description>
 
   <change-notes><![CDATA[
+      <strong>1.4.9</strong>
+      <ul>
+        <li>Rebuild against latest IntelliJ IDEA 2022.2</li>
+      </ul>
       <strong>1.4.8</strong>
       <ul>
         <li>Rebuild against latest IntelliJ IDEA 2022.1</li>
@@ -71,10 +75,6 @@
       <strong>1.2.2</strong>
       <ul>
         <li>Fixed mutability inspection by only checking concrete classes</li>
-      </ul>
-      <strong>1.2.1</strong>
-      <ul>
-        <li>Add mutability inspection to check for immutable messages with non-final fields and mutable messages with only final fields</li>
       </ul>
     ]]>
   </change-notes>

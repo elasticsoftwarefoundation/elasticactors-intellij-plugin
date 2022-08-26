@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij' version '1.5.3'
+    id 'org.jetbrains.intellij' version '1.8.1'
     id 'net.researchgate.release' version '2.8.1'
 }
 
@@ -30,12 +30,12 @@ release {
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
     // Define IntelliJ Platform API version to use for building this plugin
-    version = '221-EAP-SNAPSHOT'
+    version = '222-EAP-SNAPSHOT'
     plugins = ['java']
 }
 
 patchPluginXml {
     version = project.version
-    sinceBuild = '221'
-    untilBuild = '221.*'
+    sinceBuild = '222'
+    untilBuild = '222.*'
 }
