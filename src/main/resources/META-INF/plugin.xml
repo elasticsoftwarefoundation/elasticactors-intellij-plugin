@@ -23,6 +23,10 @@
     ]]></description>
 
   <change-notes><![CDATA[
+      <strong>1.4.10</strong>
+      <ul>
+        <li>Rebuild against Java 17 and latest IntelliJ IDEA 2022.3</li>
+      </ul>
       <strong>1.4.9</strong>
       <ul>
         <li>Rebuild against latest IntelliJ IDEA 2022.2</li>
@@ -71,10 +75,6 @@
       <strong>1.3.0</strong>
       <ul>
         <li>Compile against Java 11 and IntelliJ IDEA 2019.3.3</li>
-      </ul>
-      <strong>1.2.2</strong>
-      <ul>
-        <li>Fixed mutability inspection by only checking concrete classes</li>
       </ul>
     ]]>
   </change-notes>
