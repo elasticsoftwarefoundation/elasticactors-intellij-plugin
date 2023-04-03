@@ -8,6 +8,7 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiParameterList;
 import com.intellij.psi.PsiType;
+import com.intellij.psi.PsiTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,16 +48,14 @@ public class MessageHandlerAnnotator implements Annotator {
                             .range(element)
                             .create());
                 }
-                if (!PsiType.VOID.equals(method.getReturnType())) {
+                if (!PsiTypes.voidType().equals(method.getReturnType())) {
                     holder.newAnnotation(WARNING, "Message Handler methods should return void")
                             .range(element)
                             .create();
                 }
             }
-        } else if (element instanceof PsiParameter) {
-            PsiParameter parameter = (PsiParameter) element;
-            if (parameter.getDeclarationScope() instanceof PsiMethod) {
-                PsiMethod method = (PsiMethod) parameter.getDeclarationScope();
+        } else if (element instanceof PsiParameter parameter) {
+            if (parameter.getDeclarationScope() instanceof PsiMethod method) {
                 if (isHandler(method)) {
                     PsiType paramType = parameter.getType();
                     if (!isValidHandlerParameterType(paramType)) {

@@ -7,7 +7,7 @@ Elastic Actors framework support for IntelliJ IDEA.
 
 ### Features
 
-* Method signature verfication for Message Handler methods
+* Method signature verification for Message Handler methods
 * Detect suspicious types for messages being sent by Actors
 * Detect potential issues with mutable and immutable Message classes
 * Find usages of classes in the context of Actor Message handling
