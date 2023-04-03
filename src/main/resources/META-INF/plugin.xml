@@ -10,7 +10,7 @@
       <br>
       <strong>Features:</strong>
       <ul>
-        <li>Method signature verfication for Message Handler methods</li>
+        <li>Method signature verification for Message Handler methods</li>
         <li>Detect suspicious types for messages being sent by Actors</li>
         <li>Detect potential issues with mutable and immutable Message classes</li>
         <li>Find usages of classes in the context of Actor Message handling
