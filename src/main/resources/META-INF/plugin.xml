@@ -23,7 +23,7 @@
     ]]></description>
 
   <change-notes><![CDATA[
-      <strong>1.4.11</strong>
+      <strong>1.4.12</strong>
       <ul>
         <li>Rebuild against latest IntelliJ IDEA 2023.2</li>
       </ul>
